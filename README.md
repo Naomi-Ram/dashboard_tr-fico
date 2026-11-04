@@ -1,13 +1,9 @@
 # Proyecto 4: "La movilidad urbana y el tráfico inteligente" (NYC TLC)
 
-## Datos del equipo y asignatura
-* Universidad: Universidad del Caribe
-* Carrera: Ingeniería en Datos e Inteligencia Organizacional (7mo Semestre)
-* Asignatura: Visualización de Datos
-* Equipo: *[Nombre del equipo]*
+## Datos del equipo
 * Integrantes:
-  * *[Abiel Gustavo Buenrostro Avila - Matrícula 230300759]*
-  * *[Naomi Elena Ramirez Rendon - Matricula 230300741]*
+  * Abiel Gustavo Buenrostro Avila - Matrícula 230300759
+  * Naomi Elena Ramirez Rendon - Matrícula 230300741
 
 ## Descripción del proyecto
 Este repositorio contiene el desarrollo del Proyecto 4 de la materia de Visualización de Datos. Trabajamos con los registros públicos de viajes en taxi de Nueva York de la [NYC Taxi and Limousine Commission (TLC)](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page) para analizar la congestión vial, los horarios de mayor tráfico, las zonas con más salidas de viajes y el costo promedio por milla.
