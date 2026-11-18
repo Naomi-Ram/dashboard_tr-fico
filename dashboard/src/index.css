@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ========================================
+   NYC Taxi Dashboard — Estilos Globales
+   Paleta definida en Fase 2 / Wireframe
+   ======================================== */
+
+:root {
+  --color-primary: #1B2A4A;
+  --color-primary-light: #2D3E5F;
+  --color-accent: #E8772E;
+  --color-accent-light: #F5A623;
+  --color-accent-dark: #C65D1A;
+  --color-teal: #0E7C7B;
+  --color-teal-light: #14B8A6;
+  --color-teal-dark: #095E5D;
+  --color-surface: #F3F4F6;
+  --color-card: #FFFFFF;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-surface);
+}
+
+/* Tipografía coherente con diseño */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Leaflet map overrides para coherencia visual */
+.leaflet-container {
+  font-family: 'Inter', system-ui, sans-serif;
+  border-radius: 0.5rem;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 0.5rem;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Tooltip personalizado del mapa */
+.zone-tooltip {
+  background: rgba(27, 42, 74, 0.95) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 10px 14px !important;
+  font-size: 13px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+.zone-tooltip::before {
+  border-top-color: rgba(27, 42, 74, 0.95) !important;
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
