@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "skills": {
+    "frontend-design": {
+      "source": "vercel-labs/open-agents",
+      "commit": "cf865e94de7729751c747171785b6ce57e7b178c",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/frontend-design/SKILL.md",
+      "computedHash": "e096e0563684970eba6a7a29d9f6801d03f0d7fe4ce5e938befb21256394f72c",
+      "installMode": "copy"
+    },
+    "interface-design": {
+      "source": "Dammyjay93/interface-design",
+      "commit": "2f9be3206855bcb2d1d0af262c8bae25cba6658d",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/interface-design/SKILL.md",
+      "computedHash": "1491bb966a2c289550e0d6eb25c19b0570ead479240f6b2ba5766d94599ea744",
+      "installMode": "copy"
+    }
+  }
+}

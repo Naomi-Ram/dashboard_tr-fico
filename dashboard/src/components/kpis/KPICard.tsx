@@ -1,40 +1,50 @@
 /**
- * KPICard — Tarjeta de KPI secundario (Fila 1, Nivel 2).
- * Fondo teal oscuro, texto blanco, valor grande.
- * Mapea los 4 KPIs secundarios del wireframe.
+ * KPICard — Tarjeta de indicador secundario (Fila 1, Columnas 2 y 3).
+ * Diseño limpio sin bordes gruesos de color: borde hairline uniforme,
+ * cifras en carbón (ink) y un punto semántico discreto junto a la etiqueta.
  */
 import React from 'react';
 import type { KPIData } from '../../types';
 
 interface KPICardProps {
   data: KPIData;
-  index: number; // Para la etiqueta de columna
 }
 
-const COLUMN_LABELS = ['COL. 2A', 'COL. 2B', 'COL. 3A', 'COL. 3B'];
+const DOT_COLOR_CLASS: Record<NonNullable<KPIData['accentColor']>, string> = {
+  taxi: 'bg-taxi',
+  transit: 'bg-transit',
+  metro: 'bg-metro',
+};
 
-const KPICard: React.FC<KPICardProps> = ({ data, index }) => {
+const KPICard: React.FC<KPICardProps> = ({ data }) => {
+  const accent = data.accentColor ?? 'transit';
+  const isTextValue = !/[\d$]/.test(data.value);
+
   return (
-    <div className="bg-teal rounded-xl shadow-sm p-4 flex flex-col justify-between min-h-[130px]">
-      {/* Badge de posición */}
-      <div className="flex items-center gap-2 mb-1">
-        <span className="bg-white/15 text-white/80 text-[10px] font-bold px-2 py-0.5 rounded">
-          KPI SECUNDARIO ({COLUMN_LABELS[index] ?? `COL. ${index + 2}`})
-        </span>
+    <div className="bg-card rounded-xl shadow-card p-4 flex flex-col justify-between h-full">
+      <div>
+        <div className="flex items-center gap-1.5 mb-2">
+          <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${DOT_COLOR_CLASS[accent]}`} />
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-tertiary truncate">
+            {data.label}
+          </p>
+        </div>
+
+        <p
+          className={`${
+            isTextValue
+              ? 'text-xl lg:text-[22px] font-sans font-bold text-ink leading-tight'
+              : 'text-2xl lg:text-[26px] font-mono font-bold tabular-nums tracking-tight text-ink'
+          } mb-2`}
+        >
+          {data.value}
+        </p>
       </div>
 
-      {/* Label */}
-      <p className="text-teal-100 text-xs font-medium mb-1 opacity-80">{data.label}</p>
-
-      {/* Valor */}
-      <p className="text-2xl lg:text-3xl font-extrabold text-white tracking-tight mb-1">
-        {data.value}
-      </p>
-
-      {/* Subtítulo */}
-      <p className="text-[11px] text-teal-100 opacity-70 leading-snug whitespace-pre-line">
-        {data.subtitle}
-      </p>
+      <div className="pt-2 border-t border-slate-100 space-y-0.5">
+        <p className="text-[11px] font-mono text-ink-tertiary tabular-nums">{data.subtitle}</p>
+        <p className="text-[11px] text-ink-secondary leading-snug">{data.insight}</p>
+      </div>
     </div>
   );
 };

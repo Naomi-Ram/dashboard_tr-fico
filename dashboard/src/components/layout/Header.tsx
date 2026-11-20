@@ -1,8 +1,7 @@
 /**
- * Header del dashboard — Rediseño moderno para plataforma de Analítica Urbana NYC.
- * Estilo visual: Clean Tech / Urban Transit Intelligence (estilo NYC Open Data & Smart Cities).
- * Elimina la estética predeterminada de Claude sustituyéndola por una paleta Slate/Graphite
- * con acentos en amarillo taxi oficial NYC (#EAB308) y azul acero (#38BDF8).
+ * Header — Barra superior sobria y controles de filtrado global (Modo Pull).
+ * Diseño silencioso (sin colores chillones ni badges fosforescentes) para que
+ * la atención recaiga en los datos y las visualizaciones.
  */
 import React from 'react';
 import type { DashboardFilters } from '../../types';
@@ -10,146 +9,171 @@ import type { DashboardFilters } from '../../types';
 interface HeaderProps {
   filters: DashboardFilters;
   onFilterChange: (key: keyof DashboardFilters, value: string) => void;
+  onResetFilters: () => void;
 }
 
 const BOROUGHS = ['Todos', 'Manhattan', 'Brooklyn', 'Queens', 'Bronx', 'Staten Island'];
 const TIME_TYPES = ['Todos', 'Hora Pico', 'Hora Valle'];
 const DAY_TYPES = ['Todos', 'Laboral', 'Fin de Semana'];
 
-const Header: React.FC<HeaderProps> = ({ filters, onFilterChange }) => {
+const Header: React.FC<HeaderProps> = ({ filters, onFilterChange, onResetFilters }) => {
+  const hasActiveFilters =
+    filters.borough !== 'Todos' ||
+    filters.timeType !== 'Todos' ||
+    filters.dayType !== 'Todos';
+
   return (
-    <header className="bg-[#0B1120] text-slate-100 border-b border-slate-800/80 shadow-lg">
+    <header className="bg-asphalt text-white border-b border-white/10">
       <div className="max-w-[1600px] mx-auto px-4 lg:px-6 py-4">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
-          
-          {/* Identidad del Proyecto / Branding */}
-          <div className="flex items-start gap-3.5">
-            {/* Ícono de movilidad urbana estilo NYC Taxi */}
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 shadow-md shadow-amber-500/10 flex-shrink-0 mt-0.5">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h8m-8 4h8m-9 5h10a2 2 0 002-2V9a2 2 0 00-2-2H7a2 2 0 00-2 2v6a2 2 0 002 2zm1 3a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z" />
+        <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+          {/* Identidad del proyecto — sobria y tipográfica */}
+          <div className="flex items-start gap-3">
+            <div
+              className="w-9 h-9 rounded-lg bg-white/[0.07] border border-white/10 flex items-center justify-center text-slate-200 flex-shrink-0 mt-0.5"
+              aria-hidden="true"
+            >
+              <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M8 7h8m-8 4h8m-9 5h10a2 2 0 002-2V9a2 2 0 00-2-2H7a2 2 0 00-2 2v6a2 2 0 002 2zm1 3a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z"
+                />
               </svg>
             </div>
 
             <div>
-              {/* Metadatos y badges técnicos */}
-              <div className="flex items-center flex-wrap gap-2 mb-1">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                  Datos Validados • Enero 2025
+              <div className="flex items-center flex-wrap gap-2 mb-0.5">
+                <span className="text-[11px] font-mono font-medium text-slate-300 tracking-wide">
+                  ENERO 2025
                 </span>
-                <span className="text-[11px] text-slate-400 font-mono">
-                  NYC TLC • 3,202,368 Viajes
+                <span className="text-slate-600">·</span>
+                <span className="text-[11px] text-slate-400 font-mono tabular-nums">
+                  NYC TLC · 3,202,368 viajes válidos · 263 zonas
                 </span>
               </div>
 
-              {/* Título y subtítulo */}
-              <h1 className="text-lg lg:text-xl font-bold tracking-tight text-white flex items-center gap-2">
-                Movilidad Urbana & Tráfico Inteligente
-                <span className="text-slate-500 font-normal">/</span>
-                <span className="text-amber-400 font-semibold text-base lg:text-lg">NYC Taxi Analytics</span>
+              <h1 className="text-lg lg:text-[21px] font-bold tracking-tight text-slate-50 leading-tight">
+                Movilidad Urbana y Tráfico Inteligente
               </h1>
-              <p className="text-slate-400 text-xs mt-0.5 font-normal">
-                Panel analítico de congestión, velocidad comercial y distribución de demanda por zona
+              <p className="text-slate-400 text-xs mt-0.5">
+                Diagnóstico de congestión vial, horarios pico, demanda espacial y costos por milla en Nueva York
               </p>
             </div>
           </div>
 
-          {/* Panel de Filtros Globales (Interacción Pull) */}
-          <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-2.5 shadow-inner backdrop-blur-sm">
-            <div className="flex items-center justify-between px-1 mb-1.5">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                <svg className="w-3 h-3 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+          {/* Controles de filtrado global — superficies neutras elevadas */}
+          <div className="bg-asphalt-subtle border border-white/[0.08] rounded-lg p-2 flex flex-wrap items-end gap-2.5">
+            {/* Distrito */}
+            <div className="flex flex-col gap-1">
+              <label
+                htmlFor="filter-borough"
+                className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 px-0.5"
+              >
+                Distrito
+              </label>
+              <div className="relative">
+                <select
+                  id="filter-borough"
+                  value={filters.borough}
+                  onChange={(e) => onFilterChange('borough', e.target.value)}
+                  className="appearance-none h-8 bg-asphalt text-slate-100 text-xs font-medium pl-2.5 pr-7 rounded-md border border-white/10 hover:border-white/20 focus:outline-none focus:ring-1 focus:ring-white/30 transition-colors cursor-pointer"
+                >
+                  {BOROUGHS.map((b) => (
+                    <option key={b} value={b} className="bg-asphalt text-slate-100">
+                      {b === 'Todos' ? 'Todos (5 distritos)' : b}
+                    </option>
+                  ))}
+                </select>
+                <svg
+                  className="w-3.5 h-3.5 text-slate-400 pointer-events-none absolute right-2 top-1/2 -translate-y-1/2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
-                Filtros Globales
-              </span>
-              <span className="text-[10px] text-slate-400">3 variables</span>
+              </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2.5">
-              {/* Filtro Distrito */}
-              <FilterSelect
-                label="Distrito"
-                value={filters.borough}
-                options={BOROUGHS}
-                onChange={(v) => onFilterChange('borough', v)}
-                icon={
-                  <svg className="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                }
-              />
+            {/* Horario */}
+            <SegmentedFilter
+              label="Horario"
+              value={filters.timeType}
+              options={TIME_TYPES}
+              onChange={(v) => onFilterChange('timeType', v)}
+            />
 
-              {/* Filtro Horario */}
-              <FilterSelect
-                label="Horario"
-                value={filters.timeType}
-                options={TIME_TYPES}
-                onChange={(v) => onFilterChange('timeType', v)}
-                icon={
-                  <svg className="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                }
-              />
+            {/* Tipo de Día */}
+            <SegmentedFilter
+              label="Tipo de Día"
+              value={filters.dayType}
+              options={DAY_TYPES}
+              onChange={(v) => onFilterChange('dayType', v)}
+            />
 
-              {/* Filtro Tipo de Día */}
-              <FilterSelect
-                label="Tipo de Día"
-                value={filters.dayType}
-                options={DAY_TYPES}
-                onChange={(v) => onFilterChange('dayType', v)}
-                icon={
-                  <svg className="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                }
-              />
-            </div>
+            {/* Botón Restablecer */}
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={onResetFilters}
+                className="h-8 px-2.5 rounded-md text-[11px] font-medium text-slate-300 hover:text-white bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 transition-colors flex items-center gap-1"
+                title="Restablecer todos los filtros"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Restablecer
+              </button>
+            )}
           </div>
-
         </div>
       </div>
     </header>
   );
 };
 
-/** Selector estilizado con ícono y feedback visual */
-interface FilterSelectProps {
+interface SegmentedFilterProps {
   label: string;
   value: string;
   options: string[];
-  onChange: (value: string) => void;
-  icon: React.ReactNode;
+  onChange: (val: string) => void;
 }
 
-const FilterSelect: React.FC<FilterSelectProps> = ({ label, value, options, onChange, icon }) => {
+const SegmentedFilter: React.FC<SegmentedFilterProps> = ({
+  label,
+  value,
+  options,
+  onChange,
+}) => {
   return (
-    <div className="relative flex items-center bg-slate-950/70 border border-slate-700/80 rounded-lg px-2.5 py-1.5 focus-within:border-amber-400 focus-within:ring-1 focus-within:ring-amber-400 transition-all">
-      <span className="mr-2 opacity-80">{icon}</span>
-      <div className="flex flex-col">
-        <span className="text-[9px] font-medium uppercase tracking-wider text-slate-400 leading-none mb-0.5">
-          {label}
-        </span>
-        <select
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          aria-label={label}
-          className="bg-transparent text-white text-xs font-medium focus:outline-none cursor-pointer pr-4 appearance-none"
-        >
-          {options.map((opt) => (
-            <option key={opt} value={opt} className="bg-slate-900 text-white">
+    <div className="flex flex-col gap-1">
+      <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 px-0.5">
+        {label}
+      </span>
+      <div
+        role="group"
+        aria-label={label}
+        className="inline-flex h-8 p-0.5 rounded-md bg-asphalt border border-white/10"
+      >
+        {options.map((opt) => {
+          const isActive = value === opt;
+          return (
+            <button
+              key={opt}
+              type="button"
+              onClick={() => onChange(opt)}
+              aria-pressed={isActive}
+              className={`px-2.5 text-xs font-medium rounded-[5px] transition-colors whitespace-nowrap ${
+                isActive
+                  ? 'bg-white/[0.16] text-white shadow-sm'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]'
+              }`}
+            >
               {opt}
-            </option>
-          ))}
-        </select>
+            </button>
+          );
+        })}
       </div>
-      {/* Flecha de dropdown personalizada */}
-      <svg className="w-3 h-3 text-slate-400 pointer-events-none absolute right-2 bottom-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-      </svg>
     </div>
   );
 };

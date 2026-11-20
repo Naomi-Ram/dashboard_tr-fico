@@ -1,16 +1,40 @@
 /**
- * Propina promedio por distrito (borough) y tipo de día.
- * Propina promedio general real: $3.10 USD (mediana $2.60).
- *
- * Solo pagos con tarjeta (efectivo no registra propina).
- * Manhattan domina en propinas por mayor volumen de pagos con tarjeta.
+ * Propina promedio real por distrito y tipo de día (pagos con tarjeta) — enero 2025.
+ * Nota: Queens refleja traslados largos desde JFK y LaGuardia; Staten Island tiene muestra reducida (n=8).
  */
 import type { TipByBorough } from '../types';
 
 export const tipsByBoroughData: TipByBorough[] = [
-  { borough: 'Manhattan',      weekday: 3.28, weekend: 3.45 },
-  { borough: 'Brooklyn',       weekday: 2.85, weekend: 3.10 },
-  { borough: 'Queens',         weekday: 3.05, weekend: 3.30 },
-  { borough: 'Bronx',          weekday: 2.40, weekend: 2.65 },
-  { borough: 'Staten Island',  weekday: 2.15, weekend: 2.40 },
+  {
+    "borough": "Manhattan",
+    "weekday": 3.55,
+    "weekend": 3.37,
+    "cardTrips": 2189720
+  },
+  {
+    "borough": "Queens",
+    "weekday": 11.11,
+    "weekend": 11.03,
+    "cardTrips": 194398
+  },
+  {
+    "borough": "Brooklyn",
+    "weekday": 1.02,
+    "weekend": 2.01,
+    "cardTrips": 21707
+  },
+  {
+    "borough": "Bronx",
+    "weekday": 0.29,
+    "weekend": 0.39,
+    "cardTrips": 5356
+  },
+  {
+    "borough": "Staten Island",
+    "weekday": 9.09,
+    "weekend": 16.94,
+    "cardTrips": 8
+  }
 ];
+
+export const TIP_OVERALL_AVERAGE = 3.10;

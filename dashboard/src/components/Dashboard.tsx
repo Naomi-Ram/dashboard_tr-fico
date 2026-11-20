@@ -1,21 +1,8 @@
 /**
- * Dashboard — Componente principal que ensambla la cuadrícula 3×3.
+ * Dashboard — Cuadrícula estructural 3×3 del Proyecto 4 (NYC TLC).
  *
- * Layout del wireframe:
- * ┌─────────────────────────────────────────────────────────────┐
- * │ HEADER + FILTROS GLOBALES                                   │
- * ├──────────┬──────────┬──────────┬──────────┬────────────────┤
- * │ KPI      │ KPI Sec1 │ KPI Sec2 │ KPI Sec3 │ KPI Sec4      │
- * │ Principal│          │          │          │                │
- * ├──────────┴──────────┴──────────┼──────────┴────────────────┤
- * │ MAPA COROPLÉTICO               │ SERIE TEMPORAL            │
- * │ (Densidad de viajes por zona)  │ (Flujo y Duración 0–23h) │
- * ├──────────────────┬─────────────┼───────────────────────────┤
- * │ BOXPLOT          │ HISTOGRAMAS │ BARRAS AGRUPADAS          │
- * │ (Pico vs Valle)  │ (Tarifa/Dist)│ (Propina por Dist./Día) │
- * └──────────────────┴─────────────┴───────────────────────────┘
- *
- * Los filtros del Header afectan los datos mostrados en cada componente.
+ * Todos los componentes (KPIs, Mapa, Serie Temporal, Boxplot, Histograma y Propinas)
+ * están conectados a los 3 filtros globales (Distrito, Horario y Tipo de Día).
  */
 import React, { useState } from 'react';
 import Header from './layout/Header';
@@ -27,72 +14,94 @@ import HistogramChart from './charts/HistogramChart';
 import GroupedBarChart from './charts/GroupedBarChart';
 import type { DashboardFilters } from '../types';
 
+const INITIAL_FILTERS: DashboardFilters = {
+  borough: 'Todos',
+  timeType: 'Todos',
+  dayType: 'Todos',
+};
+
 const Dashboard: React.FC = () => {
-  const [filters, setFilters] = useState<DashboardFilters>({
-    borough: 'Todos',
-    timeType: 'Todos',
-    dayType: 'Todos',
-  });
+  const [filters, setFilters] = useState<DashboardFilters>(INITIAL_FILTERS);
 
   const handleFilterChange = (key: keyof DashboardFilters, value: string) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
+  const handleResetFilters = () => {
+    setFilters(INITIAL_FILTERS);
+  };
+
   return (
-    <div className="min-h-screen bg-surface">
-      {/* ═══ HEADER + FILTROS ═══ */}
-      <Header filters={filters} onFilterChange={handleFilterChange} />
+    <div className="min-h-screen bg-canvas text-ink">
+      {/* ═══ HEADER + FILTROS GLOBALES ═══ */}
+      <Header
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        onResetFilters={handleResetFilters}
+      />
 
       {/* ═══ CONTENIDO PRINCIPAL ═══ */}
       <main className="max-w-[1600px] mx-auto px-4 lg:px-6 py-5 space-y-5">
-
-        {/* ═══ FILA 1: KPIs ═══ */}
+        {/* ═══ FILA 1: KPIs (conectados a los 3 filtros) ═══ */}
         <section aria-label="Indicadores clave de rendimiento">
-          <KPISection />
+          <KPISection filters={filters} />
         </section>
 
-        {/* ═══ FILA 2: Mapa + Serie Temporal ═══ */}
+        {/* ═══ FILA 2: Mapa (2/3) + Serie Temporal (1/3) ═══ */}
         <section
-          aria-label="Mapa y serie temporal"
+          aria-label="Mapa coroplético y serie temporal"
           className="grid grid-cols-1 lg:grid-cols-3 gap-4"
         >
-          {/* Mapa coroplético — 2/3 del ancho */}
           <div className="lg:col-span-2">
             <ChoroplethMap filterBorough={filters.borough} />
           </div>
 
-          {/* Serie temporal — 1/3 del ancho */}
           <div className="lg:col-span-1">
-            <TimeSeriesChart filterDayType={filters.dayType} />
+            <TimeSeriesChart
+              filterBorough={filters.borough}
+              filterDayType={filters.dayType}
+              filterTimeType={filters.timeType}
+            />
           </div>
         </section>
 
-        {/* ═══ FILA 3: Boxplot + Histograma + Barras Agrupadas ═══ */}
+        {/* ═══ FILA 3: Boxplot + Histogramas + Propinas por Distrito ═══ */}
         <section
-          aria-label="Gráficos complementarios"
+          aria-label="Análisis complementario de dispersión, distribución y propinas"
           className="grid grid-cols-1 lg:grid-cols-3 gap-4"
         >
-          <BoxplotChart />
-          <HistogramChart />
-          <GroupedBarChart />
+          <BoxplotChart
+            filterBorough={filters.borough}
+            filterTimeType={filters.timeType}
+            filterDayType={filters.dayType}
+          />
+          <HistogramChart
+            filterBorough={filters.borough}
+            filterTimeType={filters.timeType}
+          />
+          <GroupedBarChart
+            filterBorough={filters.borough}
+            filterDayType={filters.dayType}
+            filterTimeType={filters.timeType}
+          />
         </section>
 
-        {/* ═══ FOOTER ═══ */}
-        <footer className="text-center text-xs text-gray-400 py-4 border-t border-gray-200">
-          <p>
-            NYC Taxi Dashboard — Proyecto 4: Visualización de Datos | Enero 2025
+        {/* ═══ FOOTER METODOLÓGICO ═══ */}
+        <footer className="text-center text-xs text-ink-tertiary py-5 border-t border-slate-200/80 space-y-1">
+          <p className="font-medium text-ink-secondary">
+            Proyecto 4: La movilidad urbana y el tráfico inteligente — Visualización de Datos (Universidad del Caribe)
           </p>
-          <p className="mt-1">
-            Fuente: NYC Taxi and Limousine Commission (TLC) —{' '}
+          <p>
+            Fuente:{' '}
             <a
               href="https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-accent hover:underline"
+              className="text-taxi hover:underline font-medium"
             >
-              Datos abiertos
+              NYC Taxi and Limousine Commission (TLC)
             </a>{' '}
-            | 3,202,368 viajes válidos | 263 zonas geográficas
+            · Dataset <span className="font-mono">yellow_tripdata_2025-01.parquet</span> (3,475,226 registros → 3,202,368 viajes válidos tras limpieza de taxímetros y outliers) · 263 zonas geográficas oficiales.
           </p>
         </footer>
       </main>
